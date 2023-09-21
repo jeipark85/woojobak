@@ -21,6 +21,7 @@ urlpatterns = [
     path('autocomplete/', views.autocomplete, name='autocomplete'),
     path('test/', views.test_view, name='test_view'),
 
+
 ]
 
 if settings.DEBUG:

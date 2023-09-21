@@ -13,15 +13,34 @@ import os
 
 from pathlib import Path
 
+import os,json
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7x_=*#x8+dvbdgmf)rhn*1fdp550%s-k_=s5!it@8*0@^90=5k'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = get_secret("SECRET_KEY")
+OPENAI = get_secret("OPENAI")
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -105,14 +124,20 @@ WSGI_APPLICATION = 'blog_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# with open('secrets.json', 'r') as f:
+#     json_data = json.load(f)
+#     db_key = json_data['POSTGRESQL_KEY']
+#     # api_key = json_data['OPENAI_API_KEY']
+#     secret_key = json_data['SECRET_KEY']
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'oreumiblogdb',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'oreumi-blog-db.cyxsnajbfbeu.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "woojobak",
+        "USER": "postgres",
+        "PASSWORD": get_secret("POSTGRESQL_KEY"),
+        "HOST": "oreumi-dangun.cyxsnajbfbeu.ap-northeast-2.rds.amazonaws.com",
+        "PORT": "5432",
     }
 }
 
