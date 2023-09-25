@@ -6,6 +6,10 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 
+#회원가입 0925
+from django.contrib import auth
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 from rest_framework import generics
 from bs4 import BeautifulSoup
@@ -41,6 +45,38 @@ def custom_login(request):
                     login(request, user) # 로그인 처리 및 세션에 사용자 정보 저장
                     return redirect('blog_app:post_list')  # 리다이렉션
         return render(request, 'registration/login.html', {'form': form}) #폼을 템플릿으로 전달
+
+
+# 로그 아웃 0925 추가
+@csrf_exempt
+def logout(request):
+    # logout으로 POST 요청이 들어왔을 때, 로그아웃 절차를 밟는다.
+    if request.method == "POST":
+        auth.logout(request)
+        return redirect("/")
+
+    # logout으로 GET 요청이 들어왔을 때, 로그인 화면을 띄워준다.
+    return render(request, "registration/login.html")
+
+# 회원 가입 0925 추가
+@csrf_exempt
+def signup(request):
+    # signup 으로 POST 요청이 왔을 때, 새로운 유저를 만드는 절차를 밟는다.
+    if request.method == "POST":
+        # password와 confirm에 입력된 값이 같다면
+        if request.POST["password"] == request.POST["confirm"]:
+            # user 객체를 새로 생성
+            user = User.objects.create_user(
+                username=request.POST["username"], password=request.POST["password"]
+            )
+            # 로그인 한다
+            # auth.login(request, user)
+            return redirect("/")
+        else:
+            return render(request, "registration/failed.html")
+
+    # signup으로 GET 요청이 왔을 때, 회원가입 화면을 띄워준다.
+    return render(request, "registration/signup.html")
 
 
 
@@ -173,10 +209,10 @@ class image_upload(View):
         # 이미지 업로드 완료시 JSON 응답으로 이미지 파일의 url 반환
         return JsonResponse({'location': file_url})
 
-
-
+#API_Key 추가 0925 
+API_KEY = getattr(settings, 'OPENAI', 'OPENAI')
 # Chat gpt API 사용
-openai.api_key = ''
+openai.api_key = 'API_KEY'
 
 # 글 자동완성 기능
 def autocomplete(request):
