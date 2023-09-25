@@ -21,6 +21,9 @@ urlpatterns = [
     path('autocomplete/', views.autocomplete, name='autocomplete'),
     path('test/', views.test_view, name='test_view'),
 
+    #회원가입 0925 
+    path("failed/", views.signup, name="failed"),
+    path("signup/", views.signup, name="signup"),
 
 ]
 
