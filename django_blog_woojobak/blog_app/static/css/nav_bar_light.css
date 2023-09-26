@@ -40,12 +40,18 @@ a:active {
 .nav-buttons{
     display: flex;
     align-items: center;
-    gap: 56px;
+    gap: 30px;
+    padding-left: 30;
+}
+
+.topic-buttons:hover {
+  transition: transform 0.8s,  background-color 0.1s;
+  color: #696969;
 }
 
 .nav-topics{
     display: flex;
-    gap: 40px;
+    gap: 20px;
 }
 
 button{
@@ -63,7 +69,8 @@ button:hover{
     border-radius: 2px;
     text-decoration: none;
     text-align: center;
-    font-weight: bold;  
+    font-weight: bold;
+    margin-right: -200px;  
     padding: 10px 25px;
   }
   

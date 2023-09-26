@@ -37,15 +37,23 @@ a:active {
   color : #f9f8f4
 }
 
+
 .nav-buttons{
     display: flex;
     align-items: center;
-    gap: 56px;
+    gap: 30px;
+    padding-left: 60px;
+    margin-left: 60px;
+}
+
+.topic-buttons:hover {
+  transition: transform 0.8s,  background-color 0.1s;
+  color: #696969;
 }
 
 .nav-topics{
     display: flex;
-    gap: 40px;
+    gap: 20px;
 }
 
 button{
@@ -64,7 +72,7 @@ button:hover{
     text-decoration: none;
     text-align: center;
     font-weight: bold;
-    
+    margin-right: -200px;
     padding: 10px 25px;
   }
   

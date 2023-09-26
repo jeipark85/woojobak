@@ -1,0 +1,25 @@
+audio:hover, audio:focus, audio:active
+{
+-webkit-box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+-moz-box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+-webkit-transform: scale(1.05);
+-moz-transform: scale(1.05);
+transform: scale(1.05);
+}
+
+
+audio
+{
+background-color: #f9f8f4;
+-webkit-transition:all 0.1s linear;
+-moz-transition:all 0.1s linear;
+-o-transition:all 0.1s linear;
+transition:all 0.1s linear;
+-moz-box-shadow: 2px 2px 4px 0px #696969;
+-webkit-box-shadow:  2px 2px 4px 0px #696969;
+box-shadow: 2px 2px 4px 0px #696969;
+-moz-border-radius:7px 7px 7px 7px ;
+-webkit-border-radius:7px 7px 7px 7px ;
+border-radius:7px 7px 7px 7px ;
+}
