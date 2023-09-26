@@ -8,32 +8,21 @@
     rel="stylesheet" href={% static 'css/login.css' %}>
     <title>Document</title>
   </head>
-  <body style="background: white">
+  <body style="background-color: white;">
     <form method="POST" action="{% url 'blog_app:signup' %}">
-      {% csrf_token %}
+      {% csrf_token %} 
 
-      <div style="background: #808080; padding: 30px">
-        <h3>Welcome to MYBlog</h3>
+        <h3>👋Create Account</h3>
         <input type="text" name="username" placeholder="username" />
         <br />
         <input type="password" name="password" placeholder="password" />
         <br />
         <input type="password" name="confirm" placeholder="confirm" />
         <br />
-      </div>
-      <input
-        type="submit"
-        value="Signup"
-        class="login"
-        style="cursor: pointer; background: #808080; margin-top: 10px"
-      />
+        <button type="submit">Signup</button>
       <div class="home">
-        <button class="home_btn">
-          <a href="{% url 'blog_app:post_list' %}">home</a>
-        </button>
-        <button class="home_btn">
-          <a href="{% url 'blog_app:login' %}">back</a>
-        </button>
+          <a href="{% url 'blog_app:login' %}">Login / </a>
+          <a href="{% url 'blog_app:post_list' %}"> Home</a>
       </div>
     </form>
   </body>
