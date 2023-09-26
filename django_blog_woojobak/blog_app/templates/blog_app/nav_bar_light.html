@@ -1,28 +1,37 @@
 {% load static %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"  type="text/css"  href="{% static 'css/nav_bar_light.css' %}">
+  <title>Document</title>
+</head>
+<body>
 <div class="nav-bar">
   <div class="nav-container">
     <div>
       <a href="{% url 'blog_app:post_list' %}">
-        <img src="{% static 'img/logo_light.png' %}" alt="" />
+        <img style="margin-left: -80px;" src="{% static 'img/logo_light.png' %}" alt="" />
       </a>
     </div>
     <div class="nav-buttons">
+      {% include 'blog_app/player.html' %}
       <div class="nav-topics">
         <a href="{% url 'blog_app:post_list_by_topic' topic='일상' %}"
-          ><button>일상</button></a
+          ><button class="topic-buttons">일상</button></a
         >
         <a href="{% url 'blog_app:post_list_by_topic' topic='요리' %}"
-          ><button>요리</button></a
+          ><button class="topic-buttons">요리</button></a
         >
         <a href="{% url 'blog_app:post_list_by_topic' topic='여행' %}"
-          ><button>여행</button></a
+          ><button class="topic-buttons">여행</button></a
         >
         <a href="{% url 'blog_app:post_list_by_topic' topic='영화' %}"
-          ><button>영화</button></a
+          ><button class="topic-buttons">영화</button></a
         >
         <a href="{% url 'blog_app:post_list_by_topic' topic='IT' %}"
-          ><button>IT</button></a
+          ><button class="topic-buttons">IT</button></a
         >
       </div>
       <div class="row-box">
@@ -46,3 +55,5 @@
     </div>
   </div>
 </div>
+</body>
+</html>
