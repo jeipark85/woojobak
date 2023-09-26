@@ -21,8 +21,10 @@
         {% csrf_token %} {{ form.as_p }}
         <button type="submit">Login</button>
       </div>
-      <a href="{% url 'blog_app:signup' %}" style="color:#1e1e1e;">회원가입 /</a>
+      <div class="signup">
+      <a href="{% url 'blog_app:signup' %}" style="color:#1e1e1e;">Sign up /</a> 
       <a href="{% url 'blog_app:post_list' %}" style="color:#1e1e1e;"> Home</a>
+      </div>
     </form>
   </body>
 </html>
