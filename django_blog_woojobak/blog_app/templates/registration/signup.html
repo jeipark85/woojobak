@@ -4,26 +4,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href={% static 'css/login.css' %}> <link
-    rel="stylesheet" href={% static 'css/login.css' %}>
+    <link rel="stylesheet" href={% static 'css/login.css' %}>
     <title>Document</title>
   </head>
-  <body style="background-color: white;">
-    <form method="POST" action="{% url 'blog_app:signup' %}">
-      {% csrf_token %} 
-
-        <h3>👋Create Account</h3>
-        <input type="text" name="username" placeholder="username" />
-        <br />
-        <input type="password" name="password" placeholder="password" />
-        <br />
-        <input type="password" name="confirm" placeholder="confirm" />
-        <br />
+  <body>
+    <form
+      method="post"
+      action="{% url 'blog_app:signup' %}"
+      onsubmit="return checkPasswordMatch();"
+    >
+      {% csrf_token %}
+      <h3>👋Create Account</h3>
+      <div class="box">
+        {{ form.as_p }}
         <button type="submit">Signup</button>
+      </div>
       <div class="home">
-          <a href="{% url 'blog_app:login' %}">Login / </a>
-          <a href="{% url 'blog_app:post_list' %}"> Home</a>
+        <a href="{% url 'blog_app:login' %}">Login / </a>
+        <a href="{% url 'blog_app:post_list' %}"> Home</a>
       </div>
     </form>
+
+    <script>
+      function checkPasswordMatch() {
+        var password = document.getElementById("id_password").value;
+        var rePassword = document.getElementById("id_re_password").value;
+
+        if (password !== rePassword) {
+          alert("비밀번호가 일치하지 않습니다.");
+          return false; // 폼 제출을 막음
+        }
+        return true; // 폼 제출 허용
+      }
+    </script>
   </body>
 </html>
