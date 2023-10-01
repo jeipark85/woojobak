@@ -10,7 +10,6 @@ body {
     font-family: 'Pretendard', sans-serif;
 }
 
-
 button[type="submit"] {
     background-color: #1e1e1e;
     color: white;
@@ -98,44 +97,12 @@ a{
     white-space: nowrap;
 }
 
+
+
 a:hover{
     cursor: pointer;
 }
 
-.failed {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    font-size: 30px;
-}
-
-.failed button {
-    font-size: 30px;
-    font-weight: 700;
-    background-color: transparent;
-}
-
-.failed_b {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    font-size: 30px;
-    color: white;
-}
-
-.failed_b button {
-    font-size: 30px;
-    font-weight: 700;
-    background-color: transparent;
-    border: 1px solid white;
-}
-
-.failed_b button a {
-    color: white;
-
-}
 .home {
     white-space: nowrap;
 }
