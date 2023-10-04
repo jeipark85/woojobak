@@ -10,6 +10,7 @@ class BlogPost(models.Model):
     views = models.IntegerField(default=0)
     author_id = models.CharField(max_length=100, null=True, blank=True)
     # view_count = models.IntegerField()
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
 
     def __str__(self):
         return self.title
@@ -44,13 +45,19 @@ class User(models.Model):
     def __str__(self):
         return self.username
     
-class Comment(models.Model):
-    user_id = models.CharField(max_length=200)
-    content_id = models.CharField(max_length=200)
-    content = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
+
     
 class BGM(models.Model):
     title = models.CharField(max_length=50)
     singer = models.CharField(max_length=50)
+    
+class Comment(models.Model):
+    article = models.ForeignKey(BlogPost,null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,on_delete=models.CASCADE)
+    content = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content
     

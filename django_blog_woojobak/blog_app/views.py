@@ -17,7 +17,7 @@ from rest_framework import generics
 from bs4 import BeautifulSoup
 
 from .serializers import BlogPostSerializer
-from .forms import CustomLoginForm, BlogPostForm
+from .forms import CustomLoginForm, BlogPostForm, CommentForm
 
 from .models import BlogPost
 
@@ -80,6 +80,8 @@ def post_list(request, topic=None):
 
     else:
         posts = BlogPost.objects.filter(publish="Y").order_by("-views")
+    for post in posts:
+        print(post)
     return render(request, "blog_app/post_list.html", {"posts": posts})
 
 
@@ -210,7 +212,7 @@ class image_upload(View):
 # API_Key 추가 0925
 API_KEY = getattr(settings, "OPENAI", "OPENAI")
 # Chat gpt API 사용
-openai.api_key = "API_KEY"
+openai.api_key = ''
 
 
 # 글 자동완성 기능
@@ -237,3 +239,54 @@ def autocomplete(request):
 # 테스트용 페이지
 def test_view(request):
     return render(request, "blog_app/test.html")
+
+# 포스트 리스트에서 좋아요 처리
+def likes_list(request, blogpost_pk):
+    if request.user.is_authenticated:
+        blogpost = BlogPost.objects.get(pk=blogpost_pk)
+        if blogpost.like_users.filter(pk=request.user.pk).exists():
+            print("좋아요 취소")
+            # 좋아요 취소 (remove)
+            blogpost.like_users.remove(request.user)
+        else:
+            print("좋아요 추가")
+            # 좋아요 추가 (add)
+            blogpost.like_users.add(request.user)
+        return redirect('blog_app:post_list')
+    return redirect('blog_app:login')
+
+# 포스트에서 좋아요 처리
+def likes_post(request, blogpost_pk):
+    if request.user.is_authenticated:
+        blogpost = BlogPost.objects.get(pk=blogpost_pk)
+        if blogpost.like_users.filter(pk=request.user.pk).exists():
+            # 좋아요 취소 (remove)
+            blogpost.like_users.remove(request.user)
+        else:
+            # 좋아요 추가 (add)
+            blogpost.like_users.add(request.user)
+        
+        return redirect('blog_app:post_list')
+    return redirect('blog_app:login')
+
+# 댓글 생성
+def comments_create(request, pk):
+    if request.user.is_authenticated:
+        article = get_object_or_404(BlogPost, pk=pk)
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+        return redirect('blog_app:detail', article.pk)
+    return redirect('blog_app:login')
+
+
+# 댓글 삭제 
+def comments_delete(request, article_pk, comment_pk):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(BlogPost, pk=comment_pk)
+        if request.user == comment.user:
+            comment.delete()
+    return redirect('blog_app:detail', article_pk)

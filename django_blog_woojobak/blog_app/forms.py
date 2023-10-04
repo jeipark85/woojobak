@@ -1,5 +1,5 @@
 from django import forms
-from .models import BlogPost
+from .models import BlogPost, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
@@ -57,3 +57,11 @@ class SignupForm(forms.Form):
             username=username, email=email, password=make_password(password)
         )
         return user
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        # fields = '__all__'
+        exclude = ('article', 'user',)

@@ -20,6 +20,7 @@
       type="text/css"
       href="{% static 'css/footer.css' %}"
     />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
   </head>
   <body>
     {% include 'blog_app/nav_bar_light.html' %}
@@ -34,6 +35,25 @@
             <h5 class="topic-box">{{ post.topic }}</h5>
           </div>
           <div class="post-content">{{ post.content | safe }}</div>
+
+          <!-- 좋아요 -->
+          <div>
+            <form action="{% url 'blog_app:likes_post' post.id %}" method='POST'>
+              {% csrf_token %}
+              <button style='border:none;'>
+                {% if request.user in blogpost_like_users.all %}
+                  <i class="far fa-heart" style="color:red; font-size: 20px;"></i>
+                {% else %}
+                  <i class="fas fa-heart" style="color:red; font-size: 20px;"></i> 
+                {% endif %}
+              </button>
+              <span class="small">
+                {{ blogpost_like_users.all|length }} 명이 이 글을 좋아합니다.
+              </span>
+              <a href="{% url 'blog_app:post_detail' post.id %}">[DETAIL]</a>
+            </form>
+          </div>
+
         </div>
         {% comment %} 추천글 영역 {% endcomment %}
         <div class="small-box">
@@ -68,6 +88,43 @@
           {% comment %} 공유버튼 {% endcomment %}
           <button class="share-button">공유하기</button>
       </div>
+
+      <!-- 댓글 기능 -->
+      <div class="comment-box">
+        <h4 class="comment-title">댓글 목록</h4>
+          <!--read-->
+          {% if comments %}
+            <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
+          {% endif %}
+          <ul>
+            {% for comment in comments %}
+              <li>
+                {{ comment.user }} - {{ comment.content }}
+                <!--delete-->
+                {% if user == comment.user %}
+                  <form action="{% url 'blog_app:comments_delete' blogpost.pk comment.pk %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <input type="submit" value="DELETE">
+                  </form>
+                {% endif %}
+              </li>
+            {% empty %}
+              <p>댓글이 없습니다.</p>
+            {% endfor %}
+          </ul>
+          <hr>
+          <!--create-->
+          {% if request.user.is_authenticated %}
+            <form action="{% url 'blog_app:comments_create' post.id %}" method="POST">
+              {% csrf_token %}
+              {{ comment_form }}
+              <input type="submit">
+            </form>
+          {% else %}
+            <a class="create-button" href="{% url 'blog_app:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
+          {% endif %}
+          </div>
+
       <!-- 다음글 표시 -->
       {% if next_post %}
       <div class="another-post-box">

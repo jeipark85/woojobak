@@ -23,6 +23,7 @@
       type="text/css"
       href="{% static 'css/footer.css' %}"
     />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
   </head>
   <body>
     {% include 'blog_app/nav_bar.html' %}
@@ -70,6 +71,26 @@
                 <h3>{{ post.title }}</h3>
                 <p>{{ post.content|text_only }}</p>
               </div>
+
+              <!-- 좋아요 -->  
+              <div>
+                <form action="{% url 'blog_app:likes_list' post.id %}" method='POST'>
+                  {% csrf_token %}
+                  <button style='border:none;'>
+                    {% if request.user in blogpost_like_users.all %}
+                      <i class="far fa-heart" style="color:white; font-size: 25px;"></i>
+                    {% else %}
+                      <i class="fas fa-heart" style="color:black; font-size: 25px;"></i> 
+                    {% endif %}
+                  </button>
+        
+                <a href="{% url 'blog_app:post_detail' post.id %}">[DETAIL]</a>
+                </form>
+                </div>
+                <span class="small">
+                  {{ post.like_users }} 명이 이 글을 좋아합니다.
+                </span>
+
             </a>
           </div>
           {% endif %} {% endfor %}
