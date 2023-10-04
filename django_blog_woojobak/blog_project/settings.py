@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
+    'openai',
 ]
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
@@ -196,5 +197,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-if DEBUG:
-    INTERNAL_IPS = ['127.0.0.1']
+# if DEBUG:
+#     INTERNAL_IPS = ['127.0.0.1']
