@@ -7,11 +7,10 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 
 # 회원가입 0925
-from django.contrib.auth.hashers import make_password
 from django.contrib import auth
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-from .forms import SignupForm
+from django.contrib import messages
 
 from rest_framework import generics
 from bs4 import BeautifulSoup
@@ -26,51 +25,43 @@ import openai  # GPT-3 라이브러리
 
 # 로그인
 def custom_login(request):
-    # 이미 로그인한 경우
     if request.user.is_authenticated:
-        return redirect("blog_app:post_list")
-
-    else:
-        form = CustomLoginForm(data=request.POST or None)
-        if request.method == "POST":
-            # 입력정보가 유효한 경우 각 필드 정보 가져옴
-            if form.is_valid():
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
-
-                # 위 정보로 사용자 인증(authenticate사용하여 superuser로 로그인 가능)
-                user = authenticate(request, username=username, password=password)
-
-                # 로그인이 성공한 경우
-                if user is not None:
-                    login(request, user)  # 로그인 처리 및 세션에 사용자 정보 저장
-                    return redirect("blog_app:post_list")  # 리다이렉션
-        return render(request, "registration/login.html", {"form": form})  # 폼을 템플릿으로 전달
-
-
-# 로그 아웃 0925 추가
-@csrf_exempt
-def logout(request):
-    # logout으로 POST 요청이 들어왔을 때, 로그아웃 절차를 밟는다.
-    if request.method == "POST":
-        auth.logout(request)
         return redirect("/")
 
-    # logout으로 GET 요청이 들어왔을 때, 로그인 화면을 띄워준다.
-    return render(request, "registration/login.html")
+    form = CustomLoginForm(data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
 
-#0927 회원가입 수정
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("/")
+
+    return render(request, "registration/login.html", {"form": form})
+
+#회원가입
+@csrf_exempt
 def register(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # 사용자가 성공적으로 등록되었을 때 리다이렉션 또는 다른 동작을 수행할 수 있습니다.
-            return redirect('success_url')  # 적절한 URL로 변경하세요.
-    else:
-        form = SignupForm()
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        confirm = request.POST["confirm"]
 
-    return render(request, 'registration/signup.html', {'form': form})
+        # 중복 닉네임 확인
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "이미 사용 중인 닉네임입니다.")
+        elif password != confirm:
+            messages.error(request, "비밀번호가 일치하지 않습니다.")
+        else:
+            # user 객체를 새로 생성
+            user = User.objects.create_user(username=username, password=password)
+            # 로그인
+            login(request, user)
+            return redirect("/")
+
+    return render(request, "registration/signup.html")
+
 
 # 포스트리스트
 def post_list(request, topic=None):
