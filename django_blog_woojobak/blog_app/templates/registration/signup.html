@@ -8,6 +8,7 @@
     <title>Document</title>
   </head>
   <body>
+
     <form
       method="post"
       action="{% url 'blog_app:signup' %}"
@@ -16,7 +17,20 @@
       {% csrf_token %}
       <h3>👋Create Account</h3>
       <div class="box">
-        {{ form.as_p }}
+          <input type="text" name="username" placeholder="Username">
+          <br>
+          <input type="password" name="password" placeholder="Password">
+          <br>
+          <input type="password" name="confirm" placeholder="Confirm Password">
+          <br>
+          {% if messages %}
+          <ul class="messages" style="list-style-type: none; font-weight: bold;
+          margin-right: 40px;">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         <button type="submit">Signup</button>
       </div>
       <div class="home">
@@ -24,18 +38,5 @@
         <a href="{% url 'blog_app:post_list' %}"> Home</a>
       </div>
     </form>
-
-    <script>
-      function checkPasswordMatch() {
-        var password = document.getElementById("id_password").value;
-        var rePassword = document.getElementById("id_re_password").value;
-
-        if (password !== rePassword) {
-          alert("비밀번호가 일치하지 않습니다.");
-          return false; // 폼 제출을 막음
-        }
-        return true; // 폼 제출 허용
-      }
-    </script>
   </body>
 </html>

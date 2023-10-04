@@ -1,13 +1,15 @@
 from django import forms
+from .models import BlogPost
 from .models import BlogPost, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
 
 
-class CustomLoginForm(AuthenticationForm):
+
+class CustomLoginForm(forms.Form):
     username = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Username or Email", "class": "login-input"}),
+        widget=forms.TextInput(attrs={"placeholder": "Username", "class": "login-input"}),
         label="",
     )
     password = forms.CharField(
@@ -26,6 +28,7 @@ class BlogPostForm(forms.ModelForm):
         self.fields["topic"].required = False
         self.fields["publish"].required = False
         self.fields["views"].required = False
+
 
 
 # 회원가입 0927
@@ -63,5 +66,6 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        # fields = '__all__'
+        fields = '__all__'
         exclude = ('article', 'user',)
+

@@ -22,7 +22,7 @@
   </form>
   {% else %}
   <body>
-    <form method="post" onsubmit="return login();">
+    <form method="post" action="{% url 'blog_app:login' %}">
       <h2>Login</h2>
       <div class="box">
         {% csrf_token %} {{ form.as_p }}
