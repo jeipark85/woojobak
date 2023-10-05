@@ -102,7 +102,7 @@
                 {{ comment.user }} - {{ comment.content }}
                 <!--delete-->
                 {% if user == comment.user %}
-                  <form action="{% url 'blog_app:comments_delete' blogpost.pk comment.pk %}" method="POST" class="d-inline">
+                <form action="{% url 'blog_app:comments_delete' post_id=post.id comment_pk=comment.pk %}" method="POST" class="d-inline">
                     {% csrf_token %}
                     <input type="submit" value="DELETE">
                   </form>
@@ -118,7 +118,7 @@
             <form action="{% url 'blog_app:comments_create' post.id %}" method="POST">
               {% csrf_token %}
               {{ comment_form }}
-              <input type="submit">
+              <input type="submit" value="작성">
             </form>
           {% else %}
             <a class="create-button" href="{% url 'blog_app:login' %}">[댓글을 작성하려면 로그인하세요.]</a>

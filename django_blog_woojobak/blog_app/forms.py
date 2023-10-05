@@ -6,7 +6,6 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
 
 
-
 class CustomLoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "Username", "class": "login-input"}),
@@ -28,7 +27,6 @@ class BlogPostForm(forms.ModelForm):
         self.fields["topic"].required = False
         self.fields["publish"].required = False
         self.fields["views"].required = False
-
 
 
 # 회원가입 0927
@@ -63,9 +61,13 @@ class SignupForm(forms.Form):
 
 
 class CommentForm(forms.ModelForm):
-
     class Meta:
         model = Comment
-        fields = '__all__'
-        exclude = ('article', 'user',)
-
+        fields = "__all__"
+        exclude = (
+            "post",
+            "user",
+        )
+        labels = {
+            "content": "댓글 입력",  # 이 부분을 수정합니다.
+        }
