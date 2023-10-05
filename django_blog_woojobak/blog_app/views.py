@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from .serializers import BlogPostSerializer
 from .forms import CustomLoginForm, BlogPostForm, CommentForm
 
-from .models import BlogPost
+from .models import BlogPost, Comment
 
 import openai  # GPT-3 라이브러리
 
@@ -284,7 +284,7 @@ def comments_create(request, post_id):
 # 댓글 삭제
 def comments_delete(request, post_id, comment_pk):
     if request.user.is_authenticated:
-        comment = get_object_or_404(BlogPost, pk=comment_pk)
+        comment = get_object_or_404(Comment, pk=comment_pk)  # 여기서 Comment 모델로 수정
         if request.user == comment.user:
             comment.delete()
     return redirect("blog_app:post_detail", post_id)
