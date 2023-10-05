@@ -22,12 +22,15 @@ urlpatterns = [
     # 회원가입 0925
     path("signup/", views.register, name="signup"),
     # 좋아요
-    path('<int:blogpost_pk>/likes_list/', views.likes_list, name='likes_list'),
-    path('<int:blogpost_pk>/likes_post/', views.likes_post, name='likes_post'),
+    path("<int:blogpost_pk>/likes_list/", views.likes_list, name="likes_list"),
+    path("<int:blogpost_pk>/likes_post/", views.likes_post, name="likes_post"),
     # 댓글
-    path('<int:pk>/comments/', views.comments_create, name='comments_create'),
-    path('<int:article_pk>/comments/<int:comment_pk>/delete/', views.comments_delete, name='comments_delete')
-
+    path("<int:post_id>/comments/", views.comments_create, name="comments_create"),
+    path(
+        "<int:post_id>/comments/<int:comment_pk>/delete/",
+        views.comments_delete,
+        name="comments_delete",
+    ),
 ]
 
 if settings.DEBUG:

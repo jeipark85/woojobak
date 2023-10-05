@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from .serializers import BlogPostSerializer
 from .forms import CustomLoginForm, BlogPostForm, CommentForm
 
-from .models import BlogPost
+from .models import BlogPost, Comment
 
 import openai  # GPT-3 라이브러리
 
@@ -40,7 +40,8 @@ def custom_login(request):
 
     return render(request, "registration/login.html", {"form": form})
 
-#회원가입
+
+# 회원가입
 @csrf_exempt
 def register(request):
     if request.method == "POST":
@@ -142,7 +143,8 @@ def create_or_update_post(request, post_id=None):
 def post_detail(request, post_id):
     # 포스트 id로 게시물 가져옴
     post = get_object_or_404(BlogPost, id=post_id)
-
+    comment_form = CommentForm()
+    comments = post.comments.all()
     if request.method == "POST":
         # 요청에 삭제가 포함된경우
         if "delete-button" in request.POST:
@@ -175,6 +177,8 @@ def post_detail(request, post_id):
         "next_post": next_post,
         "recommended_posts": recommended_posts,
         "MEDIA_URL": settings.MEDIA_URL,
+        "comment_form": comment_form,
+        "comments": comments,
     }
 
     return render(request, "blog_app/post.html", context)
@@ -203,7 +207,7 @@ class image_upload(View):
 # API_Key 추가 0925
 API_KEY = getattr(settings, "OPENAI", "OPENAI")
 # Chat gpt API 사용
-openai.api_key = ''
+openai.api_key = ""
 
 
 # 글 자동완성 기능
@@ -231,6 +235,7 @@ def autocomplete(request):
 def test_view(request):
     return render(request, "blog_app/test.html")
 
+
 # 포스트 리스트에서 좋아요 처리
 def likes_list(request, blogpost_pk):
     if request.user.is_authenticated:
@@ -243,8 +248,9 @@ def likes_list(request, blogpost_pk):
             print("좋아요 추가")
             # 좋아요 추가 (add)
             blogpost.like_users.add(request.user)
-        return redirect('blog_app:post_list')
-    return redirect('blog_app:login')
+        return redirect("blog_app:post_list")
+    return redirect("blog_app:login")
+
 
 # 포스트에서 좋아요 처리
 def likes_post(request, blogpost_pk):
@@ -256,28 +262,29 @@ def likes_post(request, blogpost_pk):
         else:
             # 좋아요 추가 (add)
             blogpost.like_users.add(request.user)
-        
-        return redirect('blog_app:post_list')
-    return redirect('blog_app:login')
+
+        return redirect("blog_app:post_list")
+    return redirect("blog_app:login")
+
 
 # 댓글 생성
-def comments_create(request, pk):
+def comments_create(request, post_id):
     if request.user.is_authenticated:
-        article = get_object_or_404(BlogPost, pk=pk)
+        post = get_object_or_404(BlogPost, pk=post_id)
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
-            comment.article = article
+            comment.post = post
             comment.user = request.user
             comment.save()
-        return redirect('blog_app:detail', article.pk)
-    return redirect('blog_app:login')
+        return redirect("blog_app:post_detail", post_id)
+    return redirect("blog_app:login")
 
 
-# 댓글 삭제 
-def comments_delete(request, article_pk, comment_pk):
+# 댓글 삭제
+def comments_delete(request, post_id, comment_pk):
     if request.user.is_authenticated:
-        comment = get_object_or_404(BlogPost, pk=comment_pk)
+        comment = get_object_or_404(Comment, pk=comment_pk)  # 여기서 Comment 모델로 수정
         if request.user == comment.user:
             comment.delete()
-    return redirect('blog_app:detail', article_pk)
+    return redirect("blog_app:post_detail", post_id)
