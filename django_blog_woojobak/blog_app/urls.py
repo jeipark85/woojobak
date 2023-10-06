@@ -22,8 +22,8 @@ urlpatterns = [
     # 회원가입 0925
     path("signup/", views.register, name="signup"),
     # 좋아요
-    path("<int:blogpost_pk>/likes_list/", views.likes_list, name="likes_list"),
-    path("<int:blogpost_pk>/likes_post/", views.likes_post, name="likes_post"),
+    path("<int:post_id>/likes_list/", views.likes_list, name="likes_list"),
+    path("<int:post_id>/likes_post/", views.likes_post, name="likes_post"),
     # 댓글
     path("<int:post_id>/comments/", views.comments_create, name="comments_create"),
     path(

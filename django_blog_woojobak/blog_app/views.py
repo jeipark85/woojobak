@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 # 회원가입 0925
 from django.contrib import auth
@@ -68,12 +69,18 @@ def register(request):
 def post_list(request, topic=None):
     # 특정 주제로 필터링
     if topic:
-        posts = BlogPost.objects.filter(topic=topic, publish="Y").order_by("-views")
-
+        posts = (
+            BlogPost.objects.filter(topic=topic, publish="Y")
+            .annotate(like_count=Count("like_users"))
+            .order_by("-like_count")
+        )
     else:
-        posts = BlogPost.objects.filter(publish="Y").order_by("-views")
-    for post in posts:
-        print(post)
+        posts = (
+            BlogPost.objects.filter(publish="Y")
+            .annotate(like_count=Count("like_users"))
+            .order_by("-like_count")
+        )
+
     return render(request, "blog_app/post_list.html", {"posts": posts})
 
 
@@ -237,31 +244,31 @@ def test_view(request):
 
 
 # 포스트 리스트에서 좋아요 처리
-def likes_list(request, blogpost_pk):
+def likes_list(request, post_id):
     if request.user.is_authenticated:
-        blogpost = BlogPost.objects.get(pk=blogpost_pk)
-        if blogpost.like_users.filter(pk=request.user.pk).exists():
+        post = BlogPost.objects.get(pk=post_id)
+        if post.like_users.filter(pk=request.user.pk).exists():
             print("좋아요 취소")
             # 좋아요 취소 (remove)
-            blogpost.like_users.remove(request.user)
+            post.like_users.remove(request.user)
         else:
             print("좋아요 추가")
             # 좋아요 추가 (add)
-            blogpost.like_users.add(request.user)
+            post.like_users.add(request.user)
         return redirect("blog_app:post_list")
     return redirect("blog_app:login")
 
 
 # 포스트에서 좋아요 처리
-def likes_post(request, blogpost_pk):
+def likes_post(request, post_id):
     if request.user.is_authenticated:
-        blogpost = BlogPost.objects.get(pk=blogpost_pk)
-        if blogpost.like_users.filter(pk=request.user.pk).exists():
+        post = BlogPost.objects.get(pk=post_id)
+        if post.like_users.filter(pk=request.user.pk).exists():
             # 좋아요 취소 (remove)
-            blogpost.like_users.remove(request.user)
+            post.like_users.remove(request.user)
         else:
             # 좋아요 추가 (add)
-            blogpost.like_users.add(request.user)
+            post.like_users.add(request.user)
 
         return redirect("blog_app:post_list")
     return redirect("blog_app:login")

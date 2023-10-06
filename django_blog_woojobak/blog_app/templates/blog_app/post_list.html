@@ -77,7 +77,7 @@
                 <form action="{% url 'blog_app:likes_list' post.id %}" method='POST'>
                   {% csrf_token %}
                   <button style='border:none;'>
-                    {% if request.user in blogpost_like_users.all %}
+                    {% if request.user in post.like_users.all %}
                       <i class="far fa-heart" style="color:white; font-size: 25px;"></i>
                     {% else %}
                       <i class="fas fa-heart" style="color:black; font-size: 25px;"></i> 
@@ -88,7 +88,7 @@
                 </form>
                 </div>
                 <span class="small">
-                  {{ post.like_users }} 명이 이 글을 좋아합니다.
+                  {{ post.like_users.count }} 명이 이 글을 좋아합니다.
                 </span>
 
             </a>
