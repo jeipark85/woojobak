@@ -41,14 +41,14 @@
             <form action="{% url 'blog_app:likes_post' post.id %}" method='POST'>
               {% csrf_token %}
               <button style='border:none;'>
-                {% if request.user in blogpost_like_users.all %}
+                {% if request.user in post.like_users.all %}
                   <i class="far fa-heart" style="color:red; font-size: 20px;"></i>
                 {% else %}
                   <i class="fas fa-heart" style="color:red; font-size: 20px;"></i> 
                 {% endif %}
               </button>
               <span class="small">
-                {{ blogpost_like_users.all|length }} 명이 이 글을 좋아합니다.
+                {{ post.like_users.all|length }} 명이 이 글을 좋아합니다.
               </span>
               <a href="{% url 'blog_app:post_detail' post.id %}">[DETAIL]</a>
             </form>
